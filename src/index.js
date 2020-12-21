@@ -1,25 +1,20 @@
+const fs = require('fs')
 const Discord = require('discord.js')
 const client = new Discord.Client()
+.commands = new Discord.Collection()
 comst config = require('./config.json')
 
-const fs = require('fs');
-const Discord = require('discord.js');
-const { prefix, token } = require('./config.json');
-
-const client = new Discord.Client();
-client.commands = new Discord.Collection();
-
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const commandFiles = fs.readdirSync('./comandos').filter(file => file.endsWith('.js'))
 
 for (const file of commandFiles) {
-	const command = require(`./commands/${file}`);
-	client.commands.set(command.name, command);
+	const command = require(`./comandos/${file}`)
+	client.commands.set(command.name, command)
 }
 
-const cooldowns = new Discord.Collection();
+const cooldowns = new Discord.Collection()
 
-client.once('ready', () => {
-	console.log('Ready!');
+client.on('ready', () => {
+	console.log(`[ SISTEMA ] Conectado como ${client.user.tag}`)
 });
 
 client.on('message', message => {
@@ -29,8 +24,8 @@ client.on('message', message => {
  
 	if(!message.content.startsWith(prefix) || message.author.bot) return;
 
-	const args = message.content.slice(prefix.length).trim().split(/ +/);
-	const commandName = args.shift().toLowerCase();
+	const args = message.content.slice(prefix.length).trim().split(/ +/)
+	const commandName = args.shift().toLowerCase()
 
 	const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
@@ -61,10 +56,10 @@ client.on('message', message => {
 	setTimeout(() => timestamps.delete(message.author.id), cooldownAmount)
 
 	try {
-		command.execute(message, args);
-	} catch (error) {
-		console.error(error);
-  message.to execute that command!');
+		command.run(client, message, args)
+	} catch (err) {
+		console.log(`[ SISTEMA ] Um erro aconteceu no comando ${command.name}! ${err}`)
+                message.channel.send({ embed: { "description": "Um erro aconteceu ao executar este comando..."} })
 	}
 });
 
