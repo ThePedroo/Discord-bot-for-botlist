@@ -1,9 +1,10 @@
 const Discord = require('discord.js')
 const client = new Discord.Client()
+comst config = require('./config.json')
 
 client.on('message', async (message) => {
  if(message.mentions.users.first() && message.mentions.users.first().id == client,user.id) {
-   message.channel.send(`Ola ${message.author}`)
+   message.channel.send(`Olá ${message.author}, meu Prefix é ${config,PREFIX}`)
    }
   })
 
